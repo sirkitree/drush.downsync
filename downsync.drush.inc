@@ -44,7 +44,7 @@ function drush_downsync($source = NULL, $destination = NULL) {
   // Execute a drush sql-sync
   print dt('SQL Sync running... NOTE: if you do not have ssh passwordless logins setup, you may be asked for your password multiple times.');
 
-  drush_invoke('sql-sync', $source, $destination, $args);
+  drush_invoke('sql-sync', $source, $destination);
 
   // Rsync the files.
   print dt('Rsync-ing files...');

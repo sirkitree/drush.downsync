@@ -2,7 +2,11 @@
 
 /**
  * @file
- * Downsync
+ * Downsync command for Drush
+ *
+ * @todo:
+ *   - allow regular sql-sync options through
+ *   - add options for just database or just files
  */
 
 /**
@@ -26,17 +30,25 @@ function downsync_drush_command() {
   return $items;
 }
 
+/**
+ * Validation routine to verify that there is a 'files' key.
+ */
 function drush_downsync_validate($source = NULL, $destination = NULL) {
   $source_settings = drush_sitealias_get_record($source);
   $destination_settings = drush_sitealias_get_record($destination);
 
+  // @todo: probably want to check the value as well
   if (!isset($source_settings['files']) || !isset($destination_settings['files'])) {
     return drush_log(dt('You MUST add a "files" key to your aliases with a value of the absolute path of the files directory, excluding trailing slash.'), 'failed');
   }
 }
 
+/**
+ * Actual function run by the downsync command.
+ */
 function drush_downsync($source = NULL, $destination = NULL) {
   // Execute a drush sql-sync
+  // @todo: allow the regular options to be passed through here. ex: --source-dump
   print dt('SQL Sync running... NOTE: if you do not have ssh passwordless logins setup, you may be asked for your password multiple times.');
   drush_shell_exec('drush sql-sync '. $source .' '. $destination .' --source-dump=/tmp/dump.sql --target-dump=/tmp/dump.sql -y');
 
@@ -49,8 +61,8 @@ function drush_downsync($source = NULL, $destination = NULL) {
 
   $destination_settings = drush_sitealias_get_record($destination);
 
+  // Do we want to allow more options here as well? ex: -rv
   $exec = 'rsync -rv '. $remote_user .'@'. $remote_host .'://'. $remote_files .'/* '. $destination_settings['files'];
-  // print $exec;
 
   print dt('Rsync-ing files...');
   drush_shell_exec($exec);

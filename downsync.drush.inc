@@ -31,7 +31,7 @@ function drush_downsync_validate($source = NULL, $destination = NULL) {
   $destination_settings = drush_sitealias_get_record($destination);
 
   if (!isset($source_settings['files']) || !isset($destination_settings['files'])) {
-    return drush_log(dt('You MUST add a "files" key to your aliases with a value of the absolute path of the files directory, excluding trailing slash.'), 'warning');
+    return drush_log(dt('You MUST add a "files" key to your aliases with a value of the absolute path of the files directory, excluding trailing slash.'), 'failed');
   }
 }
 
